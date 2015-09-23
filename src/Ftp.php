@@ -112,7 +112,7 @@ class Ftp
      */
     public function rmdir($dir)
     {
-        if (!ftp_mkdir($this->connection, $dir)) {
+        if (!ftp_rmdir($this->connection, $dir)) {
             throw new Exception('Error: There was an error removing the directory ' . $dir);
         }
         return $this;
