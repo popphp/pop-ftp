@@ -104,6 +104,21 @@ class Ftp
     }
 
     /**
+     * Make nested sub-directories
+     *
+     * @param  string $dirs
+     * @return Ftp
+     */
+    public function mkdirs($dirs)
+    {
+        $dirs = explode('/', $dirs);
+        foreach ($dirs as $dir) {
+            $this->mkdir($dir);
+            $this->chdir($dir);
+        }
+    }
+
+    /**
      * Remove directory
      *
      * @param  string $dir
