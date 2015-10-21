@@ -142,6 +142,13 @@ class Ftp
      */
     public function mkdirs($dirs)
     {
+        if (substr($dirs, 0, 1) == '/') {
+            $dirs = substr($dirs, 1);
+        }
+        if (substr($dirs, -1) == '/') {
+            $dirs = substr($dirs, 0, -1);
+        }
+
         $dirs   = explode('/', $dirs);
         $curDir = $this->connectionString;
 
