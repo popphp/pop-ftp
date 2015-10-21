@@ -33,33 +33,64 @@ class Ftp
     protected $connection = null;
 
     /**
+     * FTP address
+     * @var string
+     */
+    protected $address = null;
+
+    /**
+     * FTP username
+     * @var string
+     */
+    protected $username = null;
+
+    /**
+     * FTP password
+     * @var string
+     */
+    protected $password = null;
+
+    /**
+     * FTP connection string
+     * @var string
+     */
+    protected $connectionString = null;
+
+    /**
      * Constructor
      *
      * Instantiate the FTP object
      *
-     * @param  string  $ftp
+     * @param  string  $address
      * @param  string  $user
      * @param  string  $pass
      * @param  boolean $ssl
      * @throws Exception
      * @return Ftp
      */
-    public function __construct($ftp, $user, $pass, $ssl = false)
+    public function __construct($address, $user, $pass, $ssl = false)
     {
+        $this->address          = $address;
+        $this->username         = $user;
+        $this->password         = $pass;
+        $this->connectionString = 'ftp://' . $user . ':' . $pass . '@' . $address;
+
         if (!function_exists('ftp_connect')) {
             throw new Exception('Error: The FTP extension is not available.');
         } else if ($ssl) {
-            if (!($this->connection = ftp_ssl_connect($ftp))) {
-                throw new Exception('Error: There was an error connecting to the FTP server ' . $ftp);
+            if (!($this->connection = ftp_ssl_connect($this->address))) {
+                throw new Exception('Error: There was an error connecting to the FTP server ' . $this->address);
             }
         } else {
-            if (!($this->connection = ftp_connect($ftp))) {
-                throw new Exception('Error: There was an error connecting to the FTP server ' . $ftp);
+            if (!($this->connection = ftp_connect($this->address))) {
+                throw new Exception('Error: There was an error connecting to the FTP server ' . $this->address);
             }
         }
 
-        if (!ftp_login($this->connection, $user, $pass)) {
-            throw new Exception('Error: There was an error connecting to the FTP server ' . $ftp . ' with those credentials.');
+        if (!ftp_login($this->connection, $this->username, $this->password)) {
+            throw new Exception(
+                'Error: There was an error connecting to the FTP server ' . $this->address . ' with those credentials.'
+            );
         }
     }
 
@@ -111,9 +142,14 @@ class Ftp
      */
     public function mkdirs($dirs)
     {
-        $dirs = explode('/', $dirs);
+        $dirs   = explode('/', $dirs);
+        $curDir = $this->connectionString;
+
         foreach ($dirs as $dir) {
-            $this->mkdir($dir);
+            $curDir .= '/' . $dir;
+            if (!is_dir($curDir)) {
+                $this->mkdir($dir);
+            }
             $this->chdir($dir);
         }
     }
@@ -131,6 +167,28 @@ class Ftp
             throw new Exception('Error: There was an error removing the directory ' . $dir);
         }
         return $this;
+    }
+
+    /**
+     * Check if file exists
+     *
+     * @param  string $file
+     * @return boolean
+     */
+    public function fileExists($file)
+    {
+        return is_file($this->connectionString . $file);
+    }
+
+    /**
+     * Check if directory exists
+     *
+     * @param  string $dir
+     * @return boolean
+     */
+    public function dirExists($dir)
+    {
+        return is_dir($this->connectionString . $dir);
     }
 
     /**
@@ -243,6 +301,16 @@ class Ftp
     public function getConnection()
     {
         return $this->connection;
+    }
+
+    /**
+     * Get the connection string
+     *
+     * @return string
+     */
+    public function getConnectionString()
+    {
+        return $this->connectionString;
     }
 
     /**
