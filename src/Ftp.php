@@ -21,7 +21,7 @@ namespace Pop\Ftp;
  * @author     Nick Sagona, III <dev@nolainteractive.com>
  * @copyright  Copyright (c) 2009-2016 NOLA Interactive, LLC. (http://www.nolainteractive.com)
  * @license    http://www.popphp.org/license     New BSD License
- * @version    2.1.0
+ * @version    3.0.0
  */
 class Ftp
 {
@@ -66,7 +66,6 @@ class Ftp
      * @param  string  $pass
      * @param  boolean $ssl
      * @throws Exception
-     * @return Ftp
      */
     public function __construct($address, $user, $pass, $ssl = false)
     {
@@ -159,6 +158,8 @@ class Ftp
             }
             $this->chdir($dir);
         }
+
+        return $this;
     }
 
     /**
@@ -229,6 +230,7 @@ class Ftp
         if (!ftp_put($this->connection, $remote, $local, $mode)) {
             throw new Exception('Error: There was an error putting the file ' . $local);
         }
+        return $this;
     }
 
     /**
@@ -328,7 +330,7 @@ class Ftp
     public function disconnect()
     {
         if ($this->isConnected()) {
-            ftp_close($this->conn);
+            ftp_close($this->connection);
         }
     }
 
