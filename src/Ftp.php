@@ -4,7 +4,7 @@
  *
  * @link       https://github.com/popphp/popphp-framework
  * @author     Nick Sagona, III <dev@nolainteractive.com>
- * @copyright  Copyright (c) 2009-2023 NOLA Interactive, LLC. (http://www.nolainteractive.com)
+ * @copyright  Copyright (c) 2009-2024 NOLA Interactive, LLC. (http://www.nolainteractive.com)
  * @license    http://www.popphp.org/license     New BSD License
  */
 
@@ -19,55 +19,55 @@ namespace Pop\Ftp;
  * @category   Pop
  * @package    Pop\Ftp
  * @author     Nick Sagona, III <dev@nolainteractive.com>
- * @copyright  Copyright (c) 2009-2023 NOLA Interactive, LLC. (http://www.nolainteractive.com)
+ * @copyright  Copyright (c) 2009-2024 NOLA Interactive, LLC. (http://www.nolainteractive.com)
  * @license    http://www.popphp.org/license     New BSD License
- * @version    3.0.4
+ * @version    4.0.0
  */
 class Ftp
 {
 
     /**
      * FTP resource
-     * @var resource
+     * @var mixed
      */
-    protected $connection = null;
+    protected mixed $connection = null;
 
     /**
      * FTP address
-     * @var string
+     * @var ?string
      */
-    protected $address = null;
+    protected ?string $address = null;
 
     /**
      * FTP username
-     * @var string
+     * @var ?string
      */
-    protected $username = null;
+    protected ?string $username = null;
 
     /**
      * FTP password
-     * @var string
+     * @var ?string
      */
-    protected $password = null;
+    protected ?string $password = null;
 
     /**
      * FTP connection string
-     * @var string
+     * @var ?string
      */
-    protected $connectionString = null;
+    protected ?string $connectionString = null;
 
     /**
      * Constructor
      *
      * Instantiate the FTP object
      *
-     * @param  string  $address
-     * @param  string  $user
-     * @param  string  $pass
-     * @param  boolean $ssl
+     * @param  string $address
+     * @param  string $user
+     * @param  string $pass
+     * @param  bool   $ssl
      * @throws Exception
      */
-    public function __construct($address, $user, $pass, $ssl = false)
+    public function __construct(string $address, string $user, string $pass, bool $ssl = false)
     {
         $this->address          = $address;
         $this->username         = $user;
@@ -98,7 +98,7 @@ class Ftp
      *
      * @return string
      */
-    public function pwd()
+    public function pwd(): string
     {
         return ftp_pwd($this->connection);
     }
@@ -110,7 +110,7 @@ class Ftp
      * @throws Exception
      * @return Ftp
      */
-    public function chdir($dir)
+    public function chdir(string $dir): Ftp
     {
         if (!ftp_chdir($this->connection, $dir)) {
             throw new Exception('Error: There was an error changing to the directory ' . $dir);
@@ -125,7 +125,7 @@ class Ftp
      * @throws Exception
      * @return Ftp
      */
-    public function mkdir($dir)
+    public function mkdir(string $dir): Ftp
     {
         if (!ftp_mkdir($this->connection, $dir)) {
             throw new Exception('Error: There was an error making the directory ' . $dir);
@@ -137,14 +137,15 @@ class Ftp
      * Make nested sub-directories
      *
      * @param  string $dirs
+     * @throws Exception
      * @return Ftp
      */
-    public function mkdirs($dirs)
+    public function mkdirs(string $dirs): Ftp
     {
-        if (substr($dirs, 0, 1) == '/') {
+        if (str_starts_with($dirs, '/')) {
             $dirs = substr($dirs, 1);
         }
-        if (substr($dirs, -1) == '/') {
+        if (str_ends_with($dirs, '/')) {
             $dirs = substr($dirs, 0, -1);
         }
 
@@ -169,7 +170,7 @@ class Ftp
      * @throws Exception
      * @return Ftp
      */
-    public function rmdir($dir)
+    public function rmdir(string $dir): Ftp
     {
         if (!ftp_rmdir($this->connection, $dir)) {
             throw new Exception('Error: There was an error removing the directory ' . $dir);
@@ -181,9 +182,9 @@ class Ftp
      * Check if file exists
      *
      * @param  string $file
-     * @return boolean
+     * @return bool
      */
-    public function fileExists($file)
+    public function fileExists(string $file): bool
     {
         return is_file($this->connectionString . $file);
     }
@@ -192,9 +193,9 @@ class Ftp
      * Check if directory exists
      *
      * @param  string $dir
-     * @return boolean
+     * @return bool
      */
-    public function dirExists($dir)
+    public function dirExists(string $dir): bool
     {
         return is_dir($this->connectionString . $dir);
     }
@@ -204,11 +205,11 @@ class Ftp
      *
      * @param  string $local
      * @param  string $remote
-     * @param  int|string $mode
+     * @param  int    $mode
      * @throws Exception
      * @return Ftp
      */
-    public function get($local, $remote, $mode = FTP_BINARY)
+    public function get(string $local, string $remote, int $mode = FTP_BINARY): Ftp
     {
         if (!ftp_get($this->connection, $local, $remote, $mode)) {
             throw new Exception('Error: There was an error getting the file ' . $remote);
@@ -221,11 +222,11 @@ class Ftp
      *
      * @param  string $remote
      * @param  string $local
-     * @param  int|string $mode
+     * @param  int    $mode
      * @throws Exception
      * @return Ftp
      */
-    public function put($remote, $local, $mode = FTP_BINARY)
+    public function put(string $remote, string $local, int $mode = FTP_BINARY): Ftp
     {
         if (!ftp_put($this->connection, $remote, $local, $mode)) {
             throw new Exception('Error: There was an error putting the file ' . $local);
@@ -241,7 +242,7 @@ class Ftp
      * @throws Exception
      * @return Ftp
      */
-    public function rename($old, $new)
+    public function rename(string $old, string $new): Ftp
     {
         if (!ftp_rename($this->connection, $old, $new)) {
             throw new Exception('Error: There was an error renaming the file ' . $old);
@@ -257,7 +258,7 @@ class Ftp
      * @throws Exception
      * @return Ftp
      */
-    public function chmod($file, $mode)
+    public function chmod(string $file, string $mode): Ftp
     {
         if (!ftp_chmod($this->connection, $mode, $file)) {
             throw new Exception('Error: There was an error changing the permission of ' . $file);
@@ -272,7 +273,7 @@ class Ftp
      * @throws Exception
      * @return Ftp
      */
-    public function delete($file)
+    public function delete(string $file): Ftp
     {
         if (!ftp_delete($this->connection, $file)) {
             throw new Exception('Error: There was an error removing the file ' . $file);
@@ -283,10 +284,10 @@ class Ftp
     /**
      * Switch the passive mode
      *
-     * @param  boolean $flag
+     * @param  bool $flag
      * @return Ftp
      */
-    public function pasv($flag = true)
+    public function pasv(bool $flag = true): Ftp
     {
         ftp_pasv($this->connection, $flag);
         return $this;
@@ -295,9 +296,9 @@ class Ftp
     /**
      * Determine whether or not connected
      *
-     * @return boolean
+     * @return bool
      */
-    public function isConnected()
+    public function isConnected(): bool
     {
         return is_resource($this->connection);
     }
@@ -305,9 +306,9 @@ class Ftp
     /**
      * Get the connection resource
      *
-     * @return resource
+     * @return mixed
      */
-    public function getConnection()
+    public function getConnection(): mixed
     {
         return $this->connection;
     }
@@ -317,7 +318,7 @@ class Ftp
      *
      * @return string
      */
-    public function getConnectionString()
+    public function getConnectionString(): string
     {
         return $this->connectionString;
     }
@@ -327,7 +328,7 @@ class Ftp
      *
      * @return void
      */
-    public function disconnect()
+    public function disconnect(): void
     {
         if ($this->isConnected()) {
             ftp_close($this->connection);

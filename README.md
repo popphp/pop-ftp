@@ -14,6 +14,13 @@ Install `pop-ftp` using Composer.
 
     composer require popphp/pop-ftp
 
+Or, require it in your composer.json file
+
+    "require": {
+        "popphp/pop-ftp" : "^4.0.0"
+    }
+
+
 BASIC USAGE
 -----------
 
