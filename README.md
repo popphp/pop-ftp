@@ -1,13 +1,22 @@
 pop-ftp
 =======
 
-OVERVIEW
+[![Join the chat at https://popphp.slack.com](https://media.popphp.org/img/slack.svg)](https://popphp.slack.com)
+[![Join the chat at https://discord.gg/D9JBxPa5](https://media.popphp.org/img/discord.svg)](https://discord.gg/D9JBxPa5)
+
+* [Overview](#overview)
+* [Install](#install)
+* [Quickstart](#quickstart)
+
+Overview
 --------
 `pop-ftp` is a simple and convenient FTP adapter for processing FTP requests via PHP.
 
-`pop-ftp` is a component of the [Pop PHP Framework](http://www.popphp.org/).
+It is a component of the [Pop PHP Framework](http://www.popphp.org/).
 
-INSTALL
+[Top](#pop-ftp)
+
+Install
 -------
 
 Install `pop-ftp` using Composer.
@@ -20,9 +29,10 @@ Or, require it in your composer.json file
         "popphp/pop-ftp" : "^4.0.0"
     }
 
+[Top](#pop-ftp)
 
-BASIC USAGE
------------
+Quickstart
+----------
 
 ### Create a new directory, change into it and upload a file
 
@@ -48,4 +58,6 @@ $ftp->chdir('somedir');
 
 $ftp->get('my_local_file.txt', 'file_on_server.txt');
 ```
+
+[Top](#pop-ftp)
 
